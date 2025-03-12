@@ -64,6 +64,84 @@ npm start
 pnpm start
 ```
 
+## 🌐 Frontend Integration
+
+### API Routes
+
+The server exposes the following authentication endpoints:
+
+```javascript
+// Base URL: http://localhost:5000
+
+// Start Apple Sign-in flow
+GET /auth/apple
+
+// Apple Sign-in callback URL (configured in Apple Developer Console)
+GET /auth/apple/callback
+
+// Get current user session
+GET /api/user
+
+// Logout user
+GET /auth/logout
+```
+
+### Frontend Implementation Example
+
+1. Add the Sign in with Apple button to your frontend:
+```html
+<!-- HTML -->
+<button onclick="signInWithApple()">Sign in with Apple</button>
+
+<!-- JavaScript -->
+<script>
+function signInWithApple() {
+  window.location.href = 'http://localhost:5000/auth/apple';
+}
+</script>
+```
+
+2. Handle the authentication flow:
+```javascript
+// Example using fetch API
+async function handleAppleCallback() {
+  try {
+    const response = await fetch('http://localhost:5000/api/user', {
+      credentials: 'include' // Important for cookies
+    });
+    const user = await response.json();
+    console.log('Authenticated user:', user);
+  } catch (error) {
+    console.error('Authentication error:', error);
+  }
+}
+```
+
+3. Logout implementation:
+```javascript
+async function logout() {
+  try {
+    await fetch('http://localhost:5000/auth/logout', {
+      credentials: 'include'
+    });
+    // Redirect to login page or handle logout UI
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+}
+```
+
+### CORS Configuration
+
+The server is configured to accept requests from the frontend URL specified in your `.env` file:
+```env
+FRONTEND_URL=http://localhost:3000  # Your frontend application URL
+```
+
+Make sure your frontend application is running on the URL specified in `FRONTEND_URL`. For development, you can use:
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:5000`
+
 ## 📁 Project Structure
 
 ```
